@@ -1,3 +1,4 @@
+
 import scala.actors.Actor
 import scala.actors.Actor._
 
@@ -14,9 +15,24 @@ class Adder extends Actor {
 }
 
 object pingpong extends Application {
+
   val adder = new Adder
   adder.start
-  adder ! Value(2 * 10)
-  adder ! Value(2 * 20)
-  adder ! Value(30 + 40)
+
+  (new Thread(new Runnable {
+      def run() {
+        adder ! Value(2 * 10)
+      }
+    })).start()
+
+  (new Thread(new Runnable {
+      def run() {
+        adder ! Value(2 * 20)
+      }
+    })).start()
+  (new Thread(new Runnable {
+      def run() {
+        adder ! Value(30 + 40)
+      }
+    })).start()
 }
