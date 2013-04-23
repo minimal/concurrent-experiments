@@ -23,7 +23,7 @@
     (future (deliver promise-c (+ 30 40)))
 
     ;; with a single agent
-    (send-off channelagent conj (* 2 10))
+    (send channelagent conj (* 2 10))
     (send channelagent conj (* 2 20))
     (send channelagent conj (+ 30 40))
     (send channelagent
