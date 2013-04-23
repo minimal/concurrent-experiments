@@ -1,5 +1,5 @@
 package main
-
+// http://play.golang.org/p/PZLOpLYZxd
 import "fmt"
 
 func main() {
