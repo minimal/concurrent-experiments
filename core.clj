@@ -42,10 +42,22 @@
 
     (println (go/take strchan))))
 
+(defn do-with-futures []
+  (let [a (future (* 2 10))
+        b (future (* 2 20))
+        c (future (+ 30 40))]
+
+    (future
+      (println @a " + " @b " + " @c " = "
+               (+ @a @b @c))))
+  )
+
+
 (defn -main [arg]
   ;; work around dangerous default behaviour in Clojure
   (alter-var-root #'*read-eval* (constantly false))
   (case arg
     "1" (do-with-promises)
     "2" (do-with-agents)
-    "3" (do-with-golightly)))
+    "3" (do-with-golightly)
+    "4" (do-with-futures)))
