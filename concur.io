@@ -19,8 +19,8 @@ result := Object clone do(run := method(
     x .. " + " .. y .. " + " .. z .. " = " .. (x + y + z)
 )) @run
 
-# theres a weird bug with `numbers @append(2* 10)` / `numbers futureSend(append(2 * 10))`
-# the value append is 200 not 20!
+# theres a weird bug with `numbers @put(2* 10)` / `numbers futureSend(put(2 * 10))`
+# the value appended is 200 not 20!
 # using coroDoLater with whole thing instead
 coroDoLater(numbers put(2 * 10))
 coroDoLater(numbers put(2 * 20))
