@@ -11,7 +11,6 @@ async.parallel([
         cb(null, 30 + 40);
     }
 ],
-// Callback to display
 function(err, results){
     var answer = 0;
     var result = "";
