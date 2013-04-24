@@ -1,3 +1,4 @@
+import scala.concurrent.ops._
 import scala.actors.Actor
 import scala.actors.Actor._
 
@@ -14,21 +15,9 @@ object pingpong extends Application {
 
   val adder = new Adder
   adder.start
+    
+  spawn { adder ! 2 * 10 }
+  spawn { adder ! 2 * 20 }
+  spawn { adder ! 30 + 40 }
 
-  (new Thread(new Runnable {
-      def run() {
-        adder ! 2 * 10
-      }
-    })).start()
-
-  (new Thread(new Runnable {
-      def run() {
-        adder ! 2 * 20
-      }
-    })).start()
-  (new Thread(new Runnable {
-      def run() {
-        adder ! 30 + 40
-      }
-    })).start()
 }
