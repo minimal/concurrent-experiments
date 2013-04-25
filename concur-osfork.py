@@ -1,3 +1,4 @@
+from operator import mul, add
 import os
 import pickle
 
@@ -14,9 +15,10 @@ if not os.fork():
                 os.fdopen(result_w, 'wb'))
     os._exit(0)
 
-for val in (2 * 10, 2 * 20, 30 + 40):
+for val in ((mul, 2, 10), (mul, 2, 20), (add, 30, 40)):
     if not os.fork():
         [os.close(i) for i in (numbers_r, result_r, result_w)]
+        val = val[0](*val[1:])
         pickle.dump(val, os.fdopen(numbers_w, 'wb'))
         os._exit(0)
 
