@@ -43,11 +43,25 @@
     (future
       (println @a " + " @b " + " @c " = " (+ @a @b @c)))))
 
+(defmacro fut-to-queue [q body] `(future (.put ~q ~body)))
+(defn do-with-future-queue []
+  (let [chan (java.util.concurrent.LinkedBlockingQueue.)
+        result (future
+                 (let [a (.take chan)
+                       b (.take chan)
+                       c (.take chan)]
+                   (str a " + " b " + " c " = " (+ a b c))))]
+    (fut-to-queue chan (* 2 10))
+    (fut-to-queue chan (* 2 20))
+    (fut-to-queue chan (+ 30 40))
+    (println @result)))
+
 (defn -main [arg]
   (alter-var-root #'*read-eval* (constantly false))
   (case arg
     "1" (do-with-promises)
     "2" (do-with-agents)
     "3" (do-with-golightly)
-    "4" (do-with-futures))
+    "4" (do-with-futures)
+    "5" (do-with-future-queue))
   nil)
