@@ -1,31 +1,22 @@
 // supercollider
 (
 var queue = List[];
-var waiting = List[];
-var runnable = List[];
+var queue_sem = Semaphore(1);
 var get = {
-	if (queue.size < 1,
-		{waiting.add(thisThread); nil.yield},
-		{queue.pop})
+	var res = nil;
+	while({res == nil}, {queue_sem.wait; if(queue.size > 0, {res = queue.pop})});
+	res;
 };
 var put = {arg item;
-	if (waiting.size > 0,
-		{runnable.add(List[waiting.pop, item])},
-		{queue.add(item)})};
-
-r = Routine {
-	var x = get.value;
-	var y = get.value;
-	var z = get.value;
-	postf("% + % + % = %", x, y, z, x + y + z);
+	queue.add(item);
+	queue_sem.signal;
 };
-runnable.add(List[r, nil]);
-runnable.add(List[Routine {put.value(2 * 10)}, nil]);
-runnable.add(List[Routine {put.value(2 * 20)}, nil]);
-runnable.add(List[Routine {put.value(30 + 40)}, nil]);
-while({runnable.size > 0}, {
-	var item = runnable.pop;
-	var res = item.at(0).next(item.at(1));
-});
-r.value.postln;
+r = { var x = get.value;
+	  var y = get.value;
+	  var z = get.value;
+      postf("% + % + % = %", x, y, z, x + y + z); }.fork;
+{ put.value(2 * 10) }.fork;
+{ put.value(2 * 20) }.fork;
+{ put.value(30 + 40) }.fork;
+r.value;
 )
