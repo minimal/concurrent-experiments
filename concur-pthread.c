@@ -72,7 +72,7 @@ void thread3() {
 int main() {
     pthread_t proc_thread;
     pthread_t put_threads[3];
-    void* ops[] = {*thread1, thread2, thread3};
+    void* ops[] = {*thread1, *thread2, *thread3};
     int i;
 
     pthread_mutex_init(&mutex, NULL);
