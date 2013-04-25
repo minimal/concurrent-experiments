@@ -18,5 +18,5 @@ r = { var x = get.value;
 { put.value(2 * 10) }.fork;
 { put.value(2 * 20) }.fork;
 { put.value(30 + 40) }.fork;
-r.value;
+r.value.postln;
 )
