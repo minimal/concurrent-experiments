@@ -1,3 +1,4 @@
+// uses coroutines and is single-threaded
 numbers := Object clone do (
     queue := List clone
     futures := List clone
