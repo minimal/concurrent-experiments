@@ -1,3 +1,4 @@
+-- NOTE: uses coroutines and is single threaded!
 waiters = {}
 queue = {}
 runnable = {}
@@ -45,9 +46,9 @@ proc = coroutine.create(function()
     put(x .. " + " .. y .. " + " .. z .. " = " .. (x + y + z))
 end)
 table.insert(runnable, {proc, nil})
-table.insert(runnable, {coroutine.create(put), 2 * 10})
-table.insert(runnable, {coroutine.create(put), 2 * 20})
-table.insert(runnable, {coroutine.create(put), 30 + 40})
+table.insert(runnable, {coroutine.create(function() put(2 * 10) end), nil})
+table.insert(runnable, {coroutine.create(function() put(2 * 20) end), nil})
+table.insert(runnable, {coroutine.create(function() put(30 + 40) end), nil})
 
 coroutine.resume(loop)
 print(get())
