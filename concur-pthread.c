@@ -16,11 +16,11 @@ struct list_item {
 struct list_item *numbers;
 struct list_item *last_item;
 
-void put(int *val) {
+void put(int val) {
     pthread_mutex_lock(&set_mutex);
     struct list_item *newitem;
     newitem = (struct list_item*)malloc(sizeof(struct list_item));
-    newitem->val = *val;
+    newitem->val = val;
     if(numbers == NULL) {
         numbers = newitem;
     } else {
@@ -57,11 +57,22 @@ void proc() {
     sprintf(result, "%i + %d + %d = %d", x, y, z, x + y + z);
 }
 
+void thread1() {
+    put(2 * 10);
+}
+
+void thread2() {
+    put(2 * 20);
+}
+
+void thread3() {
+    put(30 + 40);
+}
 
 int main() {
     pthread_t proc_thread;
     pthread_t put_threads[3];
-    int *results = (int[]){ 2 * 10, 2 * 20, 30 + 40 };
+    void* ops[] = {*thread1, thread2, thread3};
     int i;
 
     pthread_mutex_init(&mutex, NULL);
@@ -70,7 +81,7 @@ int main() {
 
     pthread_create(&proc_thread, NULL, (void*)&proc, NULL);
     for(i = 0; i < 3; i++) {
-        pthread_create(&put_threads[i], NULL, (void*)&put, (void*)&results[i]);
+        pthread_create(&put_threads[i], NULL, (void*)ops[i], NULL);
     }
     pthread_join(proc_thread, NULL);
     puts(result);
