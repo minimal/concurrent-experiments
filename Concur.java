@@ -9,17 +9,17 @@ import java.util.concurrent.Future;
 
 public class Concur {
     
-    public static void main(final String[] argv) {
+    public static void main(final String[] argv) { 
 
         final ExecutorService service = Executors.newFixedThreadPool(4);
-        final List<Future<Integer>> tasks = new LinkedList<Future<Integer>>();
+        final List<Future<Integer>> sumTasks = new LinkedList<Future<Integer>>();
 
         for (int i = 1; i <= 3; ++i) {
-            tasks.add(service.submit(new MulWorker(i * 10)));
+            sumTasks.add(service.submit(new MulWorker(i * 10)));
         }
 
         try {
-            Future<String> sumWorker = service.submit(new SumWorker(tasks));
+            Future<String> sumWorker = service.submit(new SumWorker(sumTasks));
             String sum = sumWorker.get();
             System.out.println(sum);
         } catch (InterruptedException | ExecutionException e) {
