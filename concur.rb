@@ -13,5 +13,4 @@ Thread.new { queue << 2 * 10 }
 Thread.new { queue << 2 * 20 }
 Thread.new { queue << 30 + 40 }
 
-receiver.join
 puts receiver.value
