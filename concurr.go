@@ -1,8 +1,11 @@
 package main
+
 // http://play.golang.org/p/PZLOpLYZxd
 import "fmt"
+import "runtime"
 
 func main() {
+    runtime.GOMAXPROCS(runtime.NumCPU())
     numbers := make(chan int)
     stringchan := make(chan string)
 
