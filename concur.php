@@ -21,10 +21,6 @@ class myAsync extends Thread {
           $this->storage[] = $res = $this->num1 * $this->num2;
         break;
       }
-	  sleep(1);
-        $this->synchronized(function($thread){
-            $thread->notify();
-        }, $this);
     } 
 }
 
@@ -39,28 +35,18 @@ $myAsync2->start();
 $myAsync3 = new myAsync($storage, 30, 40, "add");
 $myAsync3->start();
 
-$myAsync1->synchronized(function($thread){
-    $thread->wait();
-}, $myAsync1);
+if ($myAsync1->join() && $myAsync2->join() && $myAsync3->join()){
+	
+	$result = 0;
+	$string = "";
 
-$myAsync2->synchronized(function($thread){
-    $thread->wait();
-}, $myAsync2);
+	foreach($storage as $value){
+		$result += $value;
+		$string .= $value . " + ";
+	}
 
-$myAsync3->synchronized(function($thread){
-    $thread->wait();
-}, $myAsync3);
-
-$result = 0;
-$string = "";
-
-foreach($storage as $value){
-	$result += $value;
-	$string .= $value . " + ";
+	print substr($string, 0, -3) . " = ".$result;
 }
-
-print substr($string, 0, -3) . " = ".$result;
-
 
 
 
