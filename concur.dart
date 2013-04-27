@@ -1,7 +1,6 @@
 import 'dart:isolate';
 
 collate() {
-  var receiver;
   port.receive((a, reply) {
     port.receive((b, reply) {
       port.receive((c, reply) {
