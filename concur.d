@@ -17,7 +17,7 @@ void mul(Tid tid, int x, int y) { tid.send(x * y); }
  
 void main()
 {
-    auto tid = std.concurrency.spawn(&recieverFunc, thisTid);
+    auto tid = spawn(&recieverFunc, thisTid);
     spawn(&mul, tid, 2, 10);
     spawn(&mul, tid, 2, 20);
     spawn(&add, tid, 30, 40);
