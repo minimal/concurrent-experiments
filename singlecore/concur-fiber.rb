@@ -1,4 +1,4 @@
-require 'fiber'
+require 'fiber'  # ruby >= 2.0
 
 receiver = Fiber.new do |queue|
     x = queue.get
