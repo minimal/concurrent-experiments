@@ -1,25 +1,28 @@
 from operator import mul, add
 import os
 import pickle
+import select
 
-numbers_r, numbers_w = os.pipe()
+numbers = [os.pipe() for i in xrange(3)]
+readers = [os.fdopen(i[0], 'rb') for i in numbers]
 result_r, result_w = os.pipe()
 
+
+def get_ready():
+    return select.select(readers, [], [])[0][0]
+
 if not os.fork():
-    [os.close(i) for i in (numbers_w, result_r)]
-    inp = os.fdopen(numbers_r, 'rb')
-    x = pickle.load(inp)
-    y = pickle.load(inp)
-    z = pickle.load(inp)
+    x = pickle.load(get_ready())
+    y = pickle.load(get_ready())
+    z = pickle.load(get_ready())
     pickle.dump("%d + %d + %d = %d" % (x, y, z, x + y + z),
                 os.fdopen(result_w, 'wb'))
     os._exit(0)
 
-for val in ((mul, 2, 10), (mul, 2, 20), (add, 30, 40)):
+for i, val in enumerate([(mul, 2, 10), (mul, 2, 20), (add, 30, 40)]):
     if not os.fork():
-        [os.close(i) for i in (numbers_r, result_r, result_w)]
         val = val[0](*val[1:])
-        pickle.dump(val, os.fdopen(numbers_w, 'wb'))
+        pickle.dump(val, os.fdopen(numbers[i][1], 'wb'))
         os._exit(0)
 
 print pickle.load(os.fdopen(result_r, 'rb'))
