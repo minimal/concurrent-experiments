@@ -23,8 +23,10 @@ worker(){
 
 main() {
   var resultPort = spawnFunction(collate);
-  var adderPort = spawnFunction(worker);
-  adderPort.call(["mul", 2, 10, resultPort]).then((reply) => resultPort.call(reply).then((reply) => print(reply)));
-  adderPort.call(["mul", 2, 20, resultPort]).then((reply) => resultPort.call(reply).then((reply) => print(reply)));
-  adderPort.call(["add", 30, 40, resultPort]).then((reply) => resultPort.call(reply).then((reply) => print(reply)));
+  spawnFunction(worker).call(["mul", 2, 10]).then(
+      (reply) => resultPort.call(reply).then((reply) => print(reply)));
+  spawnFunction(worker).call(["mul", 2, 20]).then(
+      (reply) => resultPort.call(reply).then((reply) => print(reply)));
+  spawnFunction(worker).call(["add", 30, 40]).then(
+      (reply) => resultPort.call(reply).then((reply) => print(reply)));
 }
