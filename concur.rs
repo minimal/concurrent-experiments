@@ -6,19 +6,18 @@ fn main() {
     let in = SharedChan(in);
     let (strout, strin): (Port<~str>, Chan<~str>) = stream();
 
-    do spawn {
+    do spawn || {
         let x = out.recv();
         let y = out.recv();
         let z = out.recv();
-        strin.send(fmt!("%d + %d + %d = %d", x, y, z, x+y+z));
+        strin.send(fmt!("%d + %d + %d = %d" , x , y , z , x + y + z));
     }
 
     let my_in = in.clone();
-    do spawn { my_in.send(2 * 10); }
+    do spawn || { my_in.send(2 * 10); }
     let my_in = in.clone();
-    do spawn { my_in.send(2 * 20); }
+    do spawn || { my_in.send(2 * 20); }
     let my_in = in.clone();
-    do spawn { my_in.send(30 + 40); }
-
+    do spawn || { my_in.send(30 + 40); }
     io::println(strout.recv());
 }
