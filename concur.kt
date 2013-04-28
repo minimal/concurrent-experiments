@@ -11,14 +11,8 @@ fun main(args : Array<String>) {
     val d = a?.plus(b!!)?.plus(c!!)
     strq.put("$a + $b + $c = $d")
   }
-  thread() {
-    numq.put(2 * 10)
-  }
-  thread() {
-    numq.put(2 * 20)
-  }
-  thread() {
-    numq.put(30 + 40)
-  }
+  thread() { numq.put(2 * 10) }
+  thread() { numq.put(2 * 20) }
+  thread() { numq.put(30 + 40) }
   println(strq.take())
 }
