@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 import Control.Concurrent
 import Control.Concurrent.Chan
 import Text.Printf
@@ -10,8 +11,8 @@ main = do
             y <- readChan numbers
             z <- readChan numbers
             writeChan result (printf "%d + %d + %d = %d" x y z (x + y + z))
-        forkIO $ do { writeChan numbers (2 * 10) }
-        forkIO $ do { writeChan numbers (2 * 20) }
-        forkIO $ do { writeChan numbers (30 + 40) }
+        forkIO $ do { !r <- return (2 * 10); writeChan numbers r }
+        forkIO $ do { !r <- return (2 * 20); writeChan numbers r }
+        forkIO $ do { !r <- return (30 + 40); writeChan numbers r }
         resultStr <- readChan result
         putStrLn resultStr
