@@ -1,5 +1,6 @@
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread
+import java.util.Random 
 
 fun main(args : Array<String>) {
   val numq = LinkedBlockingQueue<Int>()
@@ -13,8 +14,9 @@ fun main(args : Array<String>) {
       strq.put("$a + $b + $c = $d")
     }
   }
-  thread() { numq.put(2 * 10) }
-  thread() { numq.put(2 * 20) }
-  thread() { numq.put(30 + 40) }
+  val rand = Random()
+  thread() { Thread.sleep(rand.nextInt(10).toLong()); numq.put(2 * 10) }
+  thread() { Thread.sleep(rand.nextInt(10).toLong()); numq.put(2 * 20) }
+  thread() { Thread.sleep(rand.nextInt(10).toLong()); numq.put(30 + 40) }
   println(strq.take())
 }
