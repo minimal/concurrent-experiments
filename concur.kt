@@ -8,8 +8,10 @@ fun main(args : Array<String>) {
     val a = numq.take()
     val b = numq.take()
     val c = numq.take()
-    val d = a?.plus(b!!)?.plus(c!!)
-    strq.put("$a + $b + $c = $d")
+    if (a != null && b != null && c != null) {
+      val d = a + b + c
+      strq.put("$a + $b + $c = $d")
+    }
   }
   thread() { numq.put(2 * 10) }
   thread() { numq.put(2 * 20) }
