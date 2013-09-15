@@ -11,6 +11,9 @@ function go_(machine, step) {
       case "continue":
         step = machine.next(value);
         break;
+      case "sleep":
+        setTimeout(function() { go_(machine, machine.next(value)); }, value);
+        return;
     }
   }
 }
@@ -42,6 +45,12 @@ function take(chan) {
   };
 }
 
+function timeout(n) {
+  return function() {
+    return ["sleep", n];
+  };
+}
+
 function concur() {
   var numch = [];
   var stringch = [];
@@ -53,14 +62,24 @@ function concur() {
     yield put(stringch, a + " + " + b + " + " + c + " = " + d);
   });
   
-  go(function* () { yield put(numch, 2 * 10)});
-  go(function* () { yield put(numch, 2 * 20)});
-  go(function* () { yield put(numch, 30 + 40)});
-
+  go(function* () {
+    yield timeout(Math.floor(Math.random()*100));
+    yield put(numch, 2 * 10);
+  });
+  	
+  go(function* () {
+    yield timeout(Math.floor(Math.random()*100));
+    yield put(numch, 2 * 20)
+    });
+  go(function* () {
+    yield timeout(Math.floor(Math.random()*100));
+    yield put(numch, 30 + 40)
+    });
+ 
   go(function* () {
     var res = yield take(stringch)
     console.log(res)
   });  
 };
 
-concur();
+//concur();
