@@ -53,9 +53,7 @@ function concur() {
     yield put(stringch, a + " + " + b + " + " + c + " = " + d);
   });
   
-  go(function* () { 
-     yield put(numch, 2 * 10);
-  });
+  go(function* () { yield put(numch, 2 * 10)});
   go(function* () { yield put(numch, 2 * 20)});
   go(function* () { yield put(numch, 30 + 40)});
 
