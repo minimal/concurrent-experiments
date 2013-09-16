@@ -1,3 +1,4 @@
+// adapted from http://swannodette.github.io/2013/08/24/es6-generators-and-csp
 function go_(machine, step) {
   while(!step.done) {
     var arr   = step.value(),
