@@ -1,3 +1,4 @@
+;; Live demo http://cljsfiddle.net/fiddle/minimal.concur
 (defn concur []
   (let [numchan (chan)
         stringchan (chan)]
