@@ -1,10 +1,11 @@
 module ConcurPar where
+import Control.Monad (replicateM)
 import Control.Monad.Par
 import Text.Printf
 
 spawnProcs :: Par String
 spawnProcs = do
-    [a, b, c] <- sequence [new, new, new]
+    [a, b, c] <- replicateM 3 new
     d <- spawn $ do
         all@[x, y, z] <- sequence [get a, get b, get c]
         return $ printf "%d + %d + %d = %d" x y z (sum all)
