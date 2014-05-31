@@ -1,3 +1,4 @@
+module ConcurPar where
 import Control.Monad.Par
 import Text.Printf
 

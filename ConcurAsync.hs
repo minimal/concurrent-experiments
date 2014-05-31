@@ -1,3 +1,4 @@
+module ConcurAsync where
 import Control.Concurrent.Async
 import Text.Printf
 

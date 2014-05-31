@@ -1,3 +1,4 @@
+module Concur where
 import Control.Concurrent
 import Control.Concurrent.Chan
 import Text.Printf
