@@ -7,9 +7,9 @@ import Text.Printf
     
 numbers :: Managed (Controller Int)
 numbers = mconcat $ map (producer Single) ys
-          where ys = [yield (2 * 10 :: Int),
-                      yield (2 * 20 :: Int),
-                      yield (30 + 40 :: Int)]
+          where ys = [yield (2 * 10),
+                      yield (2 * 20),
+                      yield (30 + 40)]
 
 proc :: Model a Int String
 proc = asPipe $ do
