@@ -1,5 +1,6 @@
 module ConcurMVC where
 import Control.Applicative (pure, liftA2)
+import Control.Monad (replicateM)
 import MVC
 import MVC.Prelude (producer, stdoutLines)
 import Text.Printf
@@ -12,10 +13,8 @@ numbers = mconcat $ map (producer Single) ys
 
 proc :: Model () Int String
 proc = asPipe $ do
-  x <- await
-  y <- await
-  z <- await
-  yield $ printf "%d + %d + %d = %d" x y z (x + y + z)
+  all@[x, y, z] <- replicateM 3 await
+  yield $ printf "%d + %d + %d = %d" x y z (sum all)
 
 main :: IO ()
 main = runMVC () proc io
