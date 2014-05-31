@@ -11,7 +11,7 @@ numbers = mconcat $ map (producer Single) ys
                       yield (2 * 20 :: Int),
                       yield (30 + 40 :: Int)]
 
-proc :: Model () Int String
+proc :: Model a Int String
 proc = asPipe $ do
   all@[x, y, z] <- replicateM 3 await
   yield $ printf "%d + %d + %d = %d" x y z (sum all)
