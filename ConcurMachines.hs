@@ -12,14 +12,14 @@ asyncYield v = liftIO a >>= yield
 numbers :: MonadIO m => WyeT m Int Int Int
 numbers = let left = capX x (addY y a)
           in wye left z a
-              where x = construct $ asyncYield (2 * 10)
-                    y = construct $ asyncYield (2 * 20)
-                    z = construct $ asyncYield (30 + 40)
-                    a = repeatedly $ do
-                          x <- awaits Z
-                          case x of
-                            Left a -> yield a
-                            Right a -> yield a
+    where x = construct $ asyncYield (2 * 10)
+          y = construct $ asyncYield (2 * 20)
+          z = construct $ asyncYield (30 + 40)
+          a = repeatedly $ do
+                x <- awaits Z
+                case x of
+                  Left a -> yield a
+                  Right a -> yield a
                                        
 proc :: Monad m => MachineT m ((->) Int) String
 proc = construct $ do
