@@ -5,7 +5,7 @@ import Pipes
 import Pipes.Concurrent
 import Text.Printf
 
-proc :: Pipe Int String IO ()
+proc :: Monad m => Pipe Int String m ()
 proc = do
   all@[x, y, z] <- replicateM 3 await
   yield $ printf "%d + %d + %d = %d" x y z (sum all)
