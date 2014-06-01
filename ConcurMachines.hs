@@ -20,7 +20,7 @@ numbers = let left = capX x (addY y a)
                 case x of
                   Left a -> yield a
                   Right a -> yield a
-                                       
+
 proc :: Monad m => MachineT m ((->) Int) String
 proc = construct $ do
   all@[x, y, z] <- replicateM 3 $ awaits id
