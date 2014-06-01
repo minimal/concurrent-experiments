@@ -18,7 +18,7 @@ master = do
   spawnLocal $ sendChan numbers (2 * 10)
   spawnLocal $ sendChan numbers (2 * 20)
   spawnLocal $ sendChan numbers (30 + 40)
-  r <- expect :: Process String
+  r <- expect
   liftIO $ putStrLn r
 
 main :: IO ()
