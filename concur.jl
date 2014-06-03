@@ -1,3 +1,4 @@
+# julia coroutines example
 proc = Task(() -> begin
   x = wait()
   y = wait()
