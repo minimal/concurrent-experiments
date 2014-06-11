@@ -22,7 +22,7 @@ numbers = []
 # that, when called, retries and continues the coroutine if
 # an item is available.
 get = lambda cc: lambda c: (
-    cc(cont(lambda _: get(cc)(c)))(c)
+    cc(cont(lambda c2: get(cc)(lambda v: c2(c(v)))))(c)
     if not numbers else c(numbers.pop(0)))
 
 # the supply of numbers for the channel
