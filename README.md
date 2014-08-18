@@ -7,7 +7,7 @@ See https://gist.github.com/elimisteve/4442820
 
 ### languages to do
 
-- [ ] ocaml
+- [X] ocaml
 - [ ] purescript
 - [ ] typescript
 - [ ] livescript
