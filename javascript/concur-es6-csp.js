@@ -1,5 +1,5 @@
 // adapted from http://swannodette.github.io/2013/08/24/es6-generators-and-csp
-// live version: http://www.es6fiddle.net/hzhfts1e/
+// live version: http://www.es6fiddle.net/hzhg1h6y/
 function go_(machine, step) {
   while(!step.done) {
     var arr   = step.value(),
