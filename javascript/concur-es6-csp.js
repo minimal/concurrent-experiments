@@ -1,20 +1,18 @@
 // adapted from http://swannodette.github.io/2013/08/24/es6-generators-and-csp
-// live version: http://www.es6fiddle.net/hzhg1h6y/
+// live version: http://www.es6fiddle.net/hzhga1vm/
 function go_(machine, step) {
   while(!step.done) {
-    var arr   = step.value(),
-        state = arr[0],
-        value = arr[1];
+    let [state, value] = step.value();
 
     switch (state) {
       case "park":
-        setTimeout(function() { go_(machine, step); }, 0);
+        setTimeout(() => go_(machine, step), 0);
         return;
       case "continue":
         step = machine.next(value);
         break;
       case "sleep":
-        setTimeout(function() { go_(machine, machine.next(value)); }, value);
+        setTimeout(() => go_(machine, machine.next(value)), value);
         return;
     }
   }
@@ -26,8 +24,8 @@ function go(machine) {
 }
 
 function put(chan, val) {
-  return function() {
-    if(chan.length == 0) {
+  return () => {
+    if(chan.length === 0) {
       chan.unshift(val);
       return ["continue", null];
     } else {
@@ -37,30 +35,27 @@ function put(chan, val) {
 }
 
 function take(chan) {
-  return function() {
-    if(chan.length == 0) {
+  return () => {
+    if(chan.length === 0) {
       return ["park", null];
     } else {
-      var val = chan.pop();
-      return ["continue", val];
+      return ["continue", chan.pop()];
     }
   };
 }
 
 function timeout(n) {
-  return function() {
-    return ["sleep", n];
-  };
+  return () => ["sleep", n];
 }
 
 function concur() {
   var numch = [];
   var stringch = [];
   go(function* (){
-    var a = yield take(numch);
-    var b = yield take(numch);
-    var c = yield take(numch);
-    var d = a + b + c;
+    let a = yield take(numch),
+        b = yield take(numch),
+        c = yield take(numch),
+        d = a + b + c;
     yield put(stringch, a + " + " + b + " + " + c + " = " + d);
   });
   
@@ -71,17 +66,17 @@ function concur() {
   	
   go(function* () {
     yield timeout(Math.floor(Math.random()*100));
-    yield put(numch, 2 * 20)
+    yield put(numch, 2 * 20);
     });
   go(function* () {
     yield timeout(Math.floor(Math.random()*100));
-    yield put(numch, 30 + 40)
+    yield put(numch, 30 + 40);
     });
  
   go(function* () {
-    var res = yield take(stringch)
-    console.log(res)
+    let res = yield take(stringch);
+    console.log(res);
   });  
-};
+}
 
 concur();
