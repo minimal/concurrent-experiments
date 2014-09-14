@@ -14,9 +14,10 @@ foreign import data Timeout :: *
 
 foreign import setTimeoutImpl
   "function setTimeoutImpl(t) {\
+  \  var env = typeof global !== 'undefined' ? global : window;\
   \  return function(fn) {\
   \    return function() {\
-  \      return setTimeout(fn, t);\
+  \      return env.setTimeout(fn, t);\
   \    }\
   \  }\
   \}" :: forall eff a. Number -> Eff eff a -> Eff eff Timeout
