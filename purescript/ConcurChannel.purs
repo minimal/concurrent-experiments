@@ -21,15 +21,11 @@ foreign import data Async :: !
 foreign import data Callback :: * -> *
 foreign import newCallback
   "function newCallback(fn){\
-  \  return {\"fn\": fn};\
+  \  return fn;\
   \}" :: forall a eff. (a -> Eff eff Unit) -> Callback a
 foreign import runCallback
   "function runCallback(cb) {\
-  \  return function(val) {\
-  \    return function() {\
-  \      return cb.fn(val)();\
-  \    }\
-  \  }\
+  \  return cb;\
   \}" :: forall a eff. Callback a -> a -> Eff (async :: Async | eff) Unit
 
 data ChannelContent a = EmptyChan [Callback a] | Values a [a]
