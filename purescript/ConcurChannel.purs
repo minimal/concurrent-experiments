@@ -4,6 +4,7 @@ import Control.Monad.Eff
 import Control.Monad.Eff.Ref
 import Control.Monad.Cont.Trans
 import Control.Monad.Trans
+import Data.List
 
 foreign import setTimeout
   "function setTimeout(t) {\
@@ -15,12 +16,6 @@ foreign import setTimeout
   \    }\
   \  }\
   \}" :: forall eff eff' a. Number -> Eff eff a -> Eff eff' Unit
-
-data NonEmptyList a = Singleton a | NEList a (NonEmptyList a)
-
-appendNE :: forall a. NonEmptyList a -> a -> NonEmptyList a
-appendNE (Singleton a) b = NEList a (Singleton b)
-appendNE (NEList a b) c = NEList a (appendNE b c)
 
 foreign import data Async :: !
 foreign import data Callback :: * -> *
@@ -37,39 +32,32 @@ foreign import runCallback
   \  }\
   \}" :: forall a eff. Callback a -> a -> Eff (async :: Async | eff) Unit
 
-data ChannelContent a = EmptyChan
-                    | Waiters (NonEmptyList (Callback a))
-                    | Values (NonEmptyList a)
-
+data ChannelContent a = EmptyChan [Callback a] | Values a [a]
 newtype Channel a = Channel (RefVal (ChannelContent a))
 
 readChan (Channel a) = ContT $ \f -> do
-  x <- readRef a
-  case x of
-    EmptyChan -> writeRef a (Waiters (Singleton (newCallback f)))
-    Waiters b -> writeRef a (Waiters (appendNE b (newCallback f)))
-    Values (Singleton b) -> do
-                             writeRef a EmptyChan
-                             f b
-    Values (NEList b c) -> do
-                            writeRef a (Values c)
-                            f b
+  r <- readRef a
+  case r of
+    EmptyChan b -> writeRef a (EmptyChan (b ++ [newCallback f]))
+    Values b [] -> do
+                    writeRef a (EmptyChan [])
+                    f b
+    Values b (x:xs) -> do
+                        writeRef a (Values x xs)
+                        f b
 
 writeChan (Channel a) v = do
-  x <- readRef a
-  case x of
-    EmptyChan -> writeRef a (Values (Singleton v))
-    Values b -> writeRef a (Values (appendNE b v))
-    Waiters (Singleton b) -> do
-                              writeRef a EmptyChan
-                              runCallback b v
-    Waiters (NEList b c) -> do
-                             writeRef a (Waiters c)
-                             runCallback b v
+  r <- readRef a
+  case r of
+    EmptyChan [] -> writeRef a (Values v [])
+    EmptyChan (x:xs) -> do
+                         writeRef a (EmptyChan xs)
+                         runCallback x v
+    Values b c -> writeRef a (Values b (c ++ [v]))
 
 newChan :: forall a eff. Eff (ref :: Ref | eff) (Channel a)
 newChan = do
-  c <- newRef EmptyChan
+  c <- newRef (EmptyChan [])
   return $ Channel c
 
 proc :: forall eff. Channel Number -> Channel String
