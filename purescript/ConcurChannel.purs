@@ -17,7 +17,6 @@ foreign import setTimeout
   \  }\
   \}" :: forall eff eff' a. Number -> Eff eff a -> Eff eff' Unit
 
-foreign import data Async :: !
 foreign import data Callback :: * -> *
 foreign import newCallback
   "function newCallback(fn){\
@@ -26,7 +25,7 @@ foreign import newCallback
 foreign import runCallback
   "function runCallback(cb) {\
   \  return cb;\
-  \}" :: forall a eff. Callback a -> a -> Eff (async :: Async | eff) Unit
+  \}" :: forall a eff. Callback a -> a -> Eff eff Unit
 
 data ChannelContent a = EmptyChan [Callback a] | Values a [a]
 newtype Channel a = Channel (RefVal (ChannelContent a))
@@ -57,7 +56,7 @@ newChan = do
   return $ Channel c
 
 proc :: forall eff. Channel Number -> Channel String
-        -> ContT Unit (Eff (ref :: Ref, async :: Async | eff)) Unit
+        -> ContT Unit (Eff (ref :: Ref | eff)) Unit
 proc num res = do
   x <- readChan num
   y <- readChan num
