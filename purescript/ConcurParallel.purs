@@ -11,14 +11,15 @@ foreign import setTimeoutImpl
   \  var env = typeof global !== 'undefined' ? global : window;\
   \  return function(fn) {\
   \    return function() {\
-  \      return env.setTimeout(function(){fn({})();}, t);\
+  \      return env.setTimeout(fn, t);\
   \    }\
   \  }\
-  \}" :: forall eff a. Number -> (Unit -> Eff eff a) -> Eff eff Timeout
+  \}" :: forall eff a. Number -> Eff eff a -> Eff eff Timeout
 
 async :: forall eff a. (Unit -> Eff eff a) -> ContT Unit (Eff eff) a
-async f = ContT $ \x -> let f' _ = f unit >>= x -- purescript isn't lazy!
-                         in void $ setTimeoutImpl 0 f'
+async f = ContT $ \x -> let f' = do val <- f unit >>= x
+                                    return val -- purescript isn't lazy
+                        in void $ setTimeoutImpl 0 f'
 
 format :: Number -> Number -> Number -> String
 format a b c = show a ++ " + " ++ show b ++ " + " ++ show c
