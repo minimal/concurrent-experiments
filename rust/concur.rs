@@ -1,21 +1,22 @@
-use std::task::spawn;
+use std::thread::spawn;
+use std::sync::mpsc::channel;
 
 fn main() {
-    let (tx, rx) = channel::<int>();
+    let (tx, rx) = channel::<isize>();
     let (strtx, strrx) =  channel();
 
-    spawn(proc() {
-        let x = rx.recv();
-        let y = rx.recv();
-        let z = rx.recv();
+    spawn(move || {
+        let x = rx.recv().unwrap();
+        let y = rx.recv().unwrap();
+        let z = rx.recv().unwrap();
         strtx.send(format!("{} + {} + {} = {}" , x , y , z , x + y + z));
     });
 
     let my_in = tx.clone();
-    spawn(proc() { my_in.send(2 * 10); });
+    spawn(move || { my_in.send(2 * 10); });
     let my_in = tx.clone();
-    spawn(proc() { my_in.send(2 * 20); });
+    spawn(move || { my_in.send(2 * 20); });
     let my_in = tx.clone();
-    spawn(proc() { my_in.send(30 + 40); });
-    println!("{}", strrx.recv());
+    spawn(move || { my_in.send(30 + 40); });
+    println!("{}", strrx.recv().unwrap());
 }
