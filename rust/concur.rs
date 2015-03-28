@@ -18,5 +18,8 @@ fn main() {
     spawn(move || { my_in.send(2 * 20); });
     let my_in = tx.clone();
     spawn(move || { my_in.send(30 + 40); });
-    println!("{}", strrx.recv().unwrap());
+    match strrx.recv() {
+        Ok(v)  => println!("{}", v),
+        Err(e) => println!("Error receiving {:?}", e),
+    }
 }
