@@ -17,10 +17,12 @@ local
     end =
     struct
       type 'a channel = 'a Queue.queue * 'a Thread.t Queue.queue
-      fun get (q, waiters) = if Queue.isEmpty q then switchNext (fn t => Queue.enqueue (waiters, t))
-                             else Queue.dequeue q
-      fun put ((q, waiters), x) = if Queue.isEmpty waiters then Queue.enqueue (q, x)
-                                  else (Queue.enqueue (scheduler, Thread.prepare (Queue.dequeue waiters, x)))
+      fun get (q, waiters) = case Queue.next q of
+                                NONE   => switchNext (fn t => Queue.enqueue (waiters, t))
+                              | SOME v => v
+      fun put ((q, waiters), x) = case Queue.next waiters of
+                                     NONE   => Queue.enqueue (q, x)
+                                   | SOME w => Queue.enqueue (scheduler, Thread.prepare (w, x))
       fun empty () = (Queue.mkQueue (), Queue.mkQueue ())
     end
 
