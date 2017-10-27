@@ -11,3 +11,6 @@ See https://gist.github.com/elimisteve/4442820
 - [X] purescript
 - [ ] typescript
 - [ ] livescript
+- [ ] crystal
+- [ ] lux
+- [ ] reason
